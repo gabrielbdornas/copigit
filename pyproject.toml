@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "copipy"
+package-mode = false
+version = "0.1.0"
+description = ""
+authors = ["Gabriel Dornas <gabrielbdornas@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+ipdb = "^0.13.13"
+copier = "^9.4.1"
+pytest-copie = "^0.2.0"
+cookiecutter = "^2.6.0"
