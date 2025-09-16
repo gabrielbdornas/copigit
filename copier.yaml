@@ -6,7 +6,7 @@ _jinja_extensions:
 
 project_name:
     type: str
-    placeholder: New Python project
+    placeholder: New repo
     help: |
         What's your project name?
 
@@ -43,9 +43,9 @@ keep_project_dir_name:
 
 project_dir_name:
     type: str
-    placeholder: new-python-project
+    placeholder: new-repo
     help: |
-        What's your project directory name?
+        What's your project directory's name?
     default: |-
         {% if keep_project_dir_name == 'yes' -%}
             {{ project_name | slugify }}
@@ -57,4 +57,3 @@ project_dir_name:
         {% if not (project_dir_name | regex_search('^[a-z0-9\-]+$')) %}
         The project_dir_name must contains lowercase letters, digits or hyphens.
         {% endif %}
-
