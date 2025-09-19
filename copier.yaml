@@ -1,15 +1,15 @@
 # Configurations
 _subdirectory: template
-_answers_file: .repo_template_copier_answers.yml
+_answers_file: .copigit_answers.yml
 _jinja_extensions:
     - cookiecutter.extensions.SlugifyExtension
 
 _tasks:
-  - command: |
-      if [ ! -d ".git" ]; then
-        git init && git add . && git commit -m "Initial commit" && echo "Git started here!!"
-      fi
-    working_directory: "{{ _copier_conf.answers.user.project_dir_name }}"
+  - command: "git init ./*"
+    when: "{{ _copier_conf.dst_path |string != '.' }}"
+  - command: "git init ./{{ project_dir_name or (project_name | slugify) }}"
+    when: "{{ _copier_conf.dst_path |string == '.' }}"
+
 
 project_name:
     type: str

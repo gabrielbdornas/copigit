@@ -10,7 +10,6 @@ def copier_project_defaults():
     return {
             'project_name': 'New Python project',
             'keep_project_dir_name': 'yes',
-            'keep_project_scripts_dir_name': 'yes',
         }
 
 
@@ -31,7 +30,7 @@ def project_dir(project):
     """
     Return new project dir structure (ls -la) and Path.
     """
-
+    
     project_parent_dir = project.project_dir
     project_parent_dir_structure = [folder for folder in project_parent_dir.glob('*')]
     project_path = project_parent_dir_structure[0]
