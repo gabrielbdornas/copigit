@@ -39,9 +39,9 @@ keep_project_dir_name:
            Convention over configuration.
            In this case the conventions are:
              - lowercase letters to maintain consistency across operating systems.
-             - Separate words with hyphens (`-`) for better readability and compatibility with command-line tools.
+             - Separate words with hyphens (`-`) or dots (`.`) for better readability and compatibility with command-line tools.
              - Keep it short and descriptive to make paths easier to type and understand.
-             - Avoid special characters like `@`, `#`, `$`, or `&`. Stick to letters, numbers, and hyphens.
+             - Avoid special characters like `@`, `#`, `$`, or `&`. Stick to letters, numbers, hyphens and dots.
              - Choose a name that reflects your project's purpose or functionality.
            Would you like to use it?
     choices:
@@ -61,6 +61,6 @@ project_dir_name:
         {%- endif %}
     when: "{{ keep_project_dir_name == 'no' }}"
     validator: >-
-        {% if not (project_dir_name | regex_search('^[a-z0-9\-]+$')) %}
+        {% if not (project_dir_name | regex_search('^[a-z0-9\-.]+$')) %}
         The project_dir_name must contains lowercase letters, digits or hyphens.
         {% endif %}
