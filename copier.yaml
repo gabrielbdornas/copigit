@@ -6,9 +6,9 @@ _jinja_extensions:
 
 _tasks:
   - command: "git init ./*"
-    when: "{{ _copier_conf.dst_path |string != '.' }}"
+    when: "{{ _copier_conf.dst_path | string != '.' }}"
   - command: "git init ./{{ project_dir_name or (project_name | slugify) }}"
-    when: "{{ _copier_conf.dst_path |string == '.' }}"
+    when: "{{ _copier_conf.dst_path | string == '.' }}"
 
 
 project_name:
