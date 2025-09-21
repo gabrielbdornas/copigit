@@ -7,7 +7,7 @@ def test_project_dir_creation(create_project):
     """
     Test new project creation in general.
     """
-    
+
     project = create_project()
     _project_dir = project_dir(project)
     project_parent_dir_structure = _project_dir[1]
@@ -39,7 +39,7 @@ def test_project_dir_name_slugify(create_project, project_name, project_dir_name
     """
     Test new project directory name and the slugify process.
     The `project_dir_name` variable must contains lowercase letters, digits or hyphens.
-    If the  `change_project_dir_name` is 'no' it must use the  `slugify` filter provided by the
+    If the  keep_project_dir_name == 'yes' it must use the  `slugify` filter provided by the
     `cookiecutter.extensions.SlugifyExtension` Jinja extension.
     """
     project = create_project(overrides={'project_name': project_name})
@@ -47,3 +47,24 @@ def test_project_dir_name_slugify(create_project, project_name, project_dir_name
     project_path = _project_dir[2]
 
     assert project_path.stem == project_dir_name
+
+
+@pytest.mark.parametrize('project_name, project_dir_name', [
+    ('Me Adapt', 'meadapt.com'),
+    ('1Meu Lindo Projeto', 'meu-lindo'),
+    ('MEU LINDO PROJETO', 'meu'),
+    ('MEU LINDO PROJETO', 'meu_lindo_projeto'),
+])
+def test_user_project_dir_name(create_project, project_name, project_dir_name):
+    """
+    Test new project directory name witout the slugify process.
+    The `project_dir_name` variable must contains lowercase letters, digits, hyphens or dots.
+    If the  keep_project_dir_name == 'no' it must use the  validator added to the project_dir_name question.
+    """
+    project = create_project(overrides={'project_name': project_name,
+                                        'keep_project_dir_name': 'no',
+                                        'project_dir_name': project_dir_name,})
+    _project_dir = project_dir(project)
+    project_path = _project_dir[2]
+
+    assert project_path.name == project_dir_name
