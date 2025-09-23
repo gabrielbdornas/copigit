@@ -12,3 +12,7 @@ ipdb = "^0.13.13"
 copier = "^9.4.1"
 pytest-copie = "^0.2.0"
 cookiecutter = "^2.6.0"
+taskipy = "^1.14.1"
+
+[tool.taskipy.tasks]
+tag = { cmd = "git add pyproject.toml && git commit -m 'v$(poetry version -s)' && git tag v$(poetry version -s) && git push origin main --tags", help = "Create a new Git tag based on the version in pyproject.toml and push it to GitHub." }
