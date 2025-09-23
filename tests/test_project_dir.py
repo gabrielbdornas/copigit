@@ -53,7 +53,6 @@ def test_project_dir_name_slugify(create_project, project_name, project_dir_name
     ('Me Adapt', 'meadapt.com'),
     ('1Meu Lindo Projeto', 'meu-lindo'),
     ('MEU LINDO PROJETO', 'meu'),
-    ('MEU LINDO PROJETO', 'meu_lindo_projeto'),
 ])
 def test_user_project_dir_name(create_project, project_name, project_dir_name):
     """
@@ -68,3 +67,36 @@ def test_user_project_dir_name(create_project, project_name, project_dir_name):
     project_path = _project_dir[2]
 
     assert project_path.name == project_dir_name
+
+@pytest.mark.parametrize('project_name, project_dir_name', [
+    ('MEU LINDO PROJETO', 'meu_lindo_projeto'),
+    ('Orçamento', 'orçamento'),
+    ('ORÇAMENTO', 'ORÇAMENTO'),
+    ('Python Copier COM Café', 'python-copier-com-café'),
+
+])
+def test_user_project_dir_name_failed(create_project, project_name, project_dir_name):
+    """
+    Test new project directory name witout the slugify process.
+    The `project_dir_name` variable must contains lowercase letters, digits, hyphens or dots.
+    If the  keep_project_dir_name == 'no' it must use the  validator added to the project_dir_name question.
+    If the `project_dir_name` not follow the rules, it must failed.
+    """
+    project = create_project(overrides={'project_name': project_name,
+                                        'keep_project_dir_name': 'no',
+                                        'project_dir_name': project_dir_name,})
+    assert project.exit_code == -1
+    assert "Validation error for question 'project_dir_name'" in str(project.exception)
+
+
+def test_user_project_name_failed(create_project):
+    """
+    The `project_name` variable must be provided.
+    If not, it must failed.
+    """
+
+    project = create_project(overrides={'project_name': '',
+                                        'keep_project_dir_name': 'no',
+                                        'project_dir_name': '',})
+    assert project.exit_code == -1
+    assert "Validation error for question 'project_name'" in str(project.exception)
