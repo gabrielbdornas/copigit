@@ -1,4 +1,4 @@
-name: Poetry Update
+name: poetry_update
 
 on:
   workflow_dispatch:
@@ -34,8 +34,13 @@ jobs:
       - name: Install dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: poetry install --no-interaction
+      - name: Configure gituser
+        uses: fregante/setup-git-user@v2
       - name: Update the project
-        run: poetry update
+        run: |
+          poetry update
+          git add poetry.lock
+          git commit -m 'chore(deps): update poetry.lock'
       - name: Run tests
         run: |
           source .venv/bin/activate
@@ -45,15 +50,10 @@ jobs:
         uses: tj-actions/changed-files@v35
         with:
           files: 'poetry.lock'
-      - name: Configure gituser
-        if: success() && steps.changes.outputs.any_changed == 'true'
-        uses: fregante/setup-git-user@v2
       - name: Push update commit from the new branch
         if: success() && steps.changes.outputs.any_changed == 'true'
         run: |
           git checkout -b poetry-update-${{ github.run_id }}
-          git add poetry.lock
-          git commit -m 'chore(deps): update poetry.lock'
           git push origin HEAD
       - name: Create Pull Request
         if: success() && steps.changes.outputs.any_changed == 'true'
