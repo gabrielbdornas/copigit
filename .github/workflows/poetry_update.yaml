@@ -34,35 +34,22 @@ jobs:
       - name: Install dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: poetry install --no-interaction
-      - name: Configure gituser
-        uses: fregante/setup-git-user@v2
       - name: Update the project
         run: |
           poetry update
-          git add poetry.lock
-          git commit -m 'chore(deps): update poetry.lock'
       - name: Run tests
         run: |
           source .venv/bin/activate
           task tests
-      - name: Get changed files
-        id: changes
-        uses: tj-actions/changed-files@v35
-        with:
-          files: 'poetry.lock'
-      - name: Push update commit from the new branch
-        if: success() && steps.changes.outputs.any_changed == 'true'
-        run: |
-          git checkout -b poetry-update-${{ github.run_id }}
-          git push origin HEAD
       - name: Create Pull Request
-        if: success() && steps.changes.outputs.any_changed == 'true'
+        if: success()
         uses: peter-evans/create-pull-request@v7
         with:
           branch: poetry-update-${{ github.run_id }}
           title: 'chore(deps): update poetry.lock'
           commit-message: 'chore(deps): update poetry.lock'
-          body: 'This PR was automatically created after running `poetry update`.'
+          body: |
+            This PR was automatically created after running `poetry update` on [actions](https://github.com/gabrielbdornas/copigit/actions/runs/${{ github.run_id }}).
           base: main
       - name: Workflow failure notification
         uses: JasonEtco/create-an-issue@v2
