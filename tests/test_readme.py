@@ -1,5 +1,6 @@
 from tests.conftest import project_dir
 
+import os
 import pytest
 
 def test_readme_creation(create_project):
@@ -8,10 +9,9 @@ def test_readme_creation(create_project):
     """
 
     project = create_project()
-    _project_dir = project_dir(project)
-    project_path_structure = _project_dir[3]
+    project_path = project_dir(project)
 
-    assert 'README.md' in project_path_structure
+    assert (project_path / 'README.md').exists()
 
 @pytest.mark.parametrize('project_name', [
     ('1Meu Lindo Projeto'),
@@ -34,8 +34,7 @@ def test_readme_content(create_project, project_name):
     """
 
     project = create_project(overrides={'project_name': project_name})
-    _project_dir = project_dir(project)
-    project_path = _project_dir[2]
+    project_path = project_dir(project)
 
     readme_path = project_path / 'README.md'
     readme_content = readme_path.read_text(encoding='utf-8')

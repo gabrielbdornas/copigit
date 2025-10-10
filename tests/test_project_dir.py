@@ -9,13 +9,11 @@ def test_project_dir_creation(create_project):
     """
 
     project = create_project()
-    _project_dir = project_dir(project)
-    project_parent_dir_structure = _project_dir[1]
-    project_path = _project_dir[2]
+    project_path = project_dir(project)
 
     assert project.exit_code == 0
     assert project.exception is None
-    assert len(project_parent_dir_structure) == 1
+    assert len([folder for folder in project_path.parent.glob('*')]) == 1
     assert project_path.is_dir()
     assert project_path.stem == 'new-python-project'
 
@@ -43,8 +41,7 @@ def test_project_dir_name_slugify(create_project, project_name, project_dir_name
     `cookiecutter.extensions.SlugifyExtension` Jinja extension.
     """
     project = create_project(overrides={'project_name': project_name})
-    _project_dir = project_dir(project)
-    project_path = _project_dir[2]
+    project_path = project_dir(project)
 
     assert project_path.stem == project_dir_name
 
@@ -63,8 +60,7 @@ def test_user_project_dir_name(create_project, project_name, project_dir_name):
     project = create_project(overrides={'project_name': project_name,
                                         'keep_project_dir_name': 'no',
                                         'project_dir_name': project_dir_name,})
-    _project_dir = project_dir(project)
-    project_path = _project_dir[2]
+    project_path = project_dir(project)
 
     assert project_path.name == project_dir_name
 
