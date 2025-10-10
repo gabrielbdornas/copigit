@@ -5,9 +5,9 @@ _jinja_extensions:
     - cookiecutter.extensions.SlugifyExtension
 
 _tasks:
-  - command: "git init ./*"
+  - command: "cd ./* && git init && git add . && git commit -m 'Initial commit'"
     when: "{{ _copier_conf.dst_path | string != '.' }}"
-  - command: "git init ./{{ project_dir_name or (project_name | slugify) }}"
+  - command: "cd ./{{ project_dir_name or (project_name | slugify) }} && git init && git add . && git commit -m 'Initial commit'"
     when: "{{ _copier_conf.dst_path | string == '.' }}"
 
 
