@@ -6,9 +6,9 @@ _jinja_extensions:
 
 _tasks:
   - command: "cd ./* && git init && git add . && git commit -m 'Initial commit'"
-    when: "{{ not _subproject and _copier_conf.dst_path | string != '.' }}"
+    when: "{{ _copier_operation == 'copy' and _copier_conf.dst_path | string != '.' }}"
   - command: "cd ./{{ project_dir_name or (project_name | slugify) }} && git init && git add . && git commit -m 'Initial commit'"
-    when: "{{ not _subproject and _copier_conf.dst_path | string == '.' }}"
+    when: "{{ _copier_operation == 'copy' and _copier_conf.dst_path | string == '.' }}"
 
 
 project_name:
