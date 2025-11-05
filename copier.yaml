@@ -5,7 +5,7 @@ _jinja_extensions:
     - cookiecutter.extensions.SlugifyExtension
 
 _tasks:
-  - command: "cd ./* && git init && git add . && git commit -m 'Initial commit' && poetry init -q && poetry add taskipy && activate"
+  - command: "cd ./* && git init && git add . && git commit -m 'Initial commit' && poetry init -q && eval $(poetry env activate)"
     when: "{{ _copier_operation == 'copy' and _copier_conf.dst_path | string != '.' }}"
   - command: "cd ./{{ project_dir_name or (project_name | slugify) }} && git init && git add . && git commit -m 'Initial commit'"
     when: "{{ _copier_operation == 'copy' and _copier_conf.dst_path | string == '.' }}"
