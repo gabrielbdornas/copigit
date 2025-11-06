@@ -1,66 +1,77 @@
 # Configurations
 _subdirectory: template
 _answers_file: .copigit_answers.yml
-_jinja_extensions:
-    - cookiecutter.extensions.SlugifyExtension
 
 _tasks:
-  - command: "cd ./* && git init && git add . && git commit -m 'Initial commit' && poetry init -q && eval $(poetry env activate)"
+  - command: "cd ./* && git init && git add . && git commit -m 'Initial commit'"
     when: "{{ _copier_operation == 'copy' and _copier_conf.dst_path | string != '.' }}"
-  - command: "cd ./{{ project_dir_name or (project_name | slugify) }} && git init && git add . && git commit -m 'Initial commit'"
-    when: "{{ _copier_operation == 'copy' and _copier_conf.dst_path | string == '.' }}"
+  - command: "git init && git add . && git commit -m 'Initial commit'"
+    when: "{{ _copier_operation == 'copy' }}"
 
+
+welcome_message:
+  type: str
+  help: |
+    🕵️  Welcome!
+
+    This copigit, copier, template helps you create a new git repository quickly
+    and with good practices from the start.
+
+    ──────────────────────────────────────────────
+    IMPORTANT RULES
+    ──────────────────────────────────────────────
+
+    1️⃣  Run the copier copy command outside your project folder.
+        Example:
+          mkdir my-project
+          cd my-project
+          copier copy gh:my-org/my-template new-project
+
+        📁  This ensures copigit can safely create the project structure
+          inside the new directory and also guarantees that the folder name
+          follows the validation rules shown below.
+
+        ❌  Don't run "copier copy ."
+        → In this case, copigit will detect the invalid destination
+          and throw an error before continuing.
+
+    2️⃣  Project directory name format:
+          • Only lowercase letters (a–z)
+          • Digits (0–9)
+          • Hyphens (-)
+          • Dots (.)
+
+        ✅  Valid:   my-project, data-tools, my.project
+        ❌  Invalid: MyProject, data_tools, project@1
+
+    3️⃣  Automatic validation:
+        copigit will stop and show an error if any rule is broken,
+        helping to keep all repositories consistent.
+
+    🚀  Once everything is ready, copigit will initialize a new git
+        repository and create your Initial commit automatically.
+
+    Press Enter to contine.
+  default: ''
+  secret: true
+  when: "{{ _copier_operation == 'copy' }}"
+
+
+# Hidden validation
+hidden_validation:
+  type: str
+  default: "{{ _copier_conf.dst_path | string }}"
+  when: "{{ _copier_operation == 'copy' and not (_copier_conf.dst_path | string | regex_search('^[a-z0-9\\-.]+$')) }}"
+  validator: >-
+    {% set dst = _copier_conf.dst_path | string %}
+    {% if dst == '.' %}
+      You must run the copier copy command outside and not use the .
+    {% elif not (dst | regex_search('^[a-z0-9\\-]+$')) %}
+      The project_dir_name must contain only lowercase letters, digits, or hyphens.
+    {% endif %}
 
 project_name:
     type: str
-    placeholder: New repo
+    default: "{{ _copier_conf.dst_path | string }}"
     help: |
-        What's your project name?
-
-           An awesome project needs an awesome name.
-           Here, you can use capital letters, digits, underscores, hyphens, and other characters.
-           This name will be used, for example, in the title of your README.md file.
-           We recommend keeping it short, simple, and meaningful.
-           Short names are easier to understand and use as your project evolves.
-           If you're having difficulty coming up with a name that meets these criteria,
-           why not ask chatGPT for help.
-    validator: >-
-      {% if not (project_name | regex_search('.+')) %}
-      The project_name must be filled.
-      {% endif %}
-
-keep_project_dir_name:
-    type: str
-    help: |
-        Let's keep the suggested project's directory name?
-
-           Isn't {{ project_name | slugify }} perfect for the project's directory name?
-           Why we're suggestin this name?
-           Convention over configuration.
-           In this case the conventions are:
-             - lowercase letters to maintain consistency across operating systems.
-             - Separate words with hyphens (`-`) or dots (`.`) for better readability and compatibility with command-line tools.
-             - Keep it short and descriptive to make paths easier to type and understand.
-             - Avoid special characters like `@`, `#`, `$`, or `&`. Stick to letters, numbers, hyphens and dots.
-             - Choose a name that reflects your project's purpose or functionality.
-           Would you like to use it?
-    choices:
-        Yes, please: "yes"
-        No, thanks: "no"
-
-project_dir_name:
-    type: str
-    placeholder: new-repo
-    help: |
-        What's your project directory's name?
-    default: |-
-        {% if keep_project_dir_name == 'yes' -%}
-            {{ project_name | slugify }}
-        {%- else -%}
-            {#- Ask user -#}
-        {%- endif %}
-    when: "{{ keep_project_dir_name == 'no' }}"
-    validator: >-
-        {% if not (project_dir_name | regex_search('^[a-z0-9\-.]+$')) %}
-        The project_dir_name must contains lowercase letters, digits or hyphens.
-        {% endif %}
+        What's your project's name?
