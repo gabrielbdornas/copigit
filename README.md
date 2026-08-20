@@ -29,7 +29,7 @@ The `copier copy` command works similarly to `git clone`, but instead of copying
 * **Case 1 – destination folder specified**
 
   ```bash
-  $ copier copy --trust gh:gabrielbdornas/repo-template my-experiment
+  $ copier copy --trust gh:gabrielbdornas/copigit my-experiment
   ```
 
   Copier will create a folder called `my-experiment/` (if it doesn’t already exist).
@@ -91,7 +91,7 @@ Would you like me to also **show what happens when Copier automatically suggests
 
 ## Contributing
 
-Contributions are welcome! Feel free to submit issues or pull requests to improve this template.
+Contributions are more, and more, than welcome! Feel free to submit issues or pull requests to improve this template.
 
 ## License
 
